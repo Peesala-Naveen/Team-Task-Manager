@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import API from '../api';
 
 import Navbar from '../components/Navbar';
+import TaskCard from '../components/TaskCard';
 
 import '../styles/project.css';
 import '../styles/dashboard.css';
@@ -85,11 +86,16 @@ function Tasks() {
                 assignedTo: ''
             });
         } catch (error) {
-            alert(error.response.data.message);
+            alert(error.response?.data?.message || 'Error assigning task');
         }
     };
 
     const updateStatus = async (taskId, status) => {
+        // Optimistic UI update
+        setTasks((prevTasks) =>
+            prevTasks.map((t) => (t._id === taskId ? { ...t, status } : t))
+        );
+
         try {
             await API.put(`/tasks/${taskId}`, {
                 status
@@ -97,7 +103,9 @@ function Tasks() {
 
             fetchTasks();
         } catch (error) {
-            console.log(error);
+            console.error('Failed to update status:', error);
+            alert('Failed to update task status. Please try again.');
+            fetchTasks();
         }
     };
 
@@ -108,7 +116,7 @@ function Tasks() {
             <div className='project-container'>
                 <h1>Task Management</h1>
 
-                {user.role === 'Admin' && (
+                {user?.role === 'Admin' && (
                     <form className='project-form' onSubmit={handleSubmit}>
                         <input
                             type='text'
@@ -165,15 +173,15 @@ function Tasks() {
 
                             {users
                                 .filter(
-                                    (user) =>
-                                        user.role === 'Member'
+                                    (u) =>
+                                        u.role === 'Member' || u.role === 'Admin'
                                 )
-                                .map((user) => (
+                                .map((u) => (
                                     <option
-                                        key={user._id}
-                                        value={user._id}
+                                        key={u._id}
+                                        value={u._id}
                                     >
-                                        {user.name}
+                                        {u.name} ({u.role})
                                     </option>
                                 ))}
                         </select>
@@ -185,85 +193,17 @@ function Tasks() {
                 )}
 
                 <div className='task-grid'>
-                    {tasks.map((task) => (
-                        <div
-                            className='task-card'
-                            key={task._id}
-                        >
-                            <h3>{task.title}</h3>
-
-                            <p>{task.description}</p>
-
-                            <p>
-                                <strong>Project:</strong>{' '}
-                                {task.project?.title}
-                            </p>
-
-                            <p>
-                                <strong>Assigned To:</strong>{' '}
-                                {task.assignedTo?.name}
-                            </p>
-
-                            <div className='task-status-section'>
-                                <p>
-                                    <strong>Status:</strong>
-                                </p>
-
-                                <div className='status-buttons'>
-                                    <button
-                                        className={
-                                            task.status ===
-                                                'Pending'
-                                                ? 'pending-btn active-pending'
-                                                : 'pending-btn'
-                                        }
-                                        onClick={() =>
-                                            updateStatus(
-                                                task._id,
-                                                'Pending'
-                                            )
-                                        }
-                                    >
-                                        Pending
-                                    </button>
-
-                                    <button
-                                        className={
-                                            task.status ===
-                                                'In Progress'
-                                                ? 'progress-btn active-progress'
-                                                : 'progress-btn'
-                                        }
-                                        onClick={() =>
-                                            updateStatus(
-                                                task._id,
-                                                'In Progress'
-                                            )
-                                        }
-                                    >
-                                        In Progress
-                                    </button>
-
-                                    <button
-                                        className={
-                                            task.status ===
-                                                'Completed'
-                                                ? 'completed-btn active-completed'
-                                                : 'completed-btn'
-                                        }
-                                        onClick={() =>
-                                            updateStatus(
-                                                task._id,
-                                                'Completed'
-                                            )
-                                        }
-                                    >
-                                        Completed
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    ))}
+                    {tasks.length > 0 ? (
+                        tasks.map((task) => (
+                            <TaskCard
+                                key={task._id}
+                                task={task}
+                                onStatusChange={updateStatus}
+                            />
+                        ))
+                    ) : (
+                        <p className='no-task-text'>No tasks available</p>
+                    )}
                 </div>
             </div>
         </>

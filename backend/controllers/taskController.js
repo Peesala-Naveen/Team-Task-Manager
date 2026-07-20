@@ -52,7 +52,9 @@ exports.updateTaskStatus = async (req, res) => {
             {
                 new: true
             }
-        );
+        )
+            .populate('assignedTo', 'name')
+            .populate('project', 'title');
 
         res.json(task);
     } catch (error) {

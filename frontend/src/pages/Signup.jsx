@@ -37,12 +37,16 @@ function Signup() {
     return (
         <div className='auth-container'>
             <form className='auth-form' onSubmit={handleSubmit}>
-                <h1>Signup</h1>
+                <div style={{ textAlign: 'center', marginBottom: '8px' }}>
+                    <i className='fa-solid fa-user-plus' style={{ fontSize: '2.5rem', color: '#6366f1', marginBottom: '12px' }}></i>
+                    <h1>Create Account</h1>
+                    <p style={{ color: '#94a3b8', fontSize: '0.9rem', marginTop: '4px' }}>Join your team to collaborate on projects and tasks</p>
+                </div>
 
                 <input
                     type='text'
                     name='name'
-                    placeholder='Enter Name'
+                    placeholder='Full Name'
                     onChange={handleChange}
                     required
                 />
@@ -50,7 +54,7 @@ function Signup() {
                 <input
                     type='email'
                     name='email'
-                    placeholder='Enter Email'
+                    placeholder='Email Address'
                     onChange={handleChange}
                     required
                 />
@@ -58,20 +62,20 @@ function Signup() {
                 <input
                     type='password'
                     name='password'
-                    placeholder='Enter Password'
+                    placeholder='Password'
                     onChange={handleChange}
                     required
                 />
 
                 <select name='role' onChange={handleChange}>
-                    <option value='Member'>Member</option>
-                    <option value='Admin'>Admin</option>
+                    <option value='Member'>Member Role</option>
+                    <option value='Admin'>Admin Role</option>
                 </select>
 
-                <button type='submit'>Signup</button>
+                <button type='submit'>Register Account</button>
 
                 <p>
-                    Already have an account? <Link to='/'>Login</Link>
+                    Already have an account? <Link to='/'>Sign In</Link>
                 </p>
             </form>
         </div>

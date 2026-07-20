@@ -1,0 +1,23 @@
+# Dependencies
+node_modules/
+
+# Production Build
+dist/
+dist-ssr/
+build/
+*.local
+
+# Environment Variables
+.env
+.env.*
+!.env.example
+
+# Logs & Cache
+*.log
+.eslintcache
+
+# OS & IDE
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

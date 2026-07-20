@@ -64,7 +64,7 @@ function Projects() {
             <div className='project-container'>
                 <h1>Projects</h1>
 
-                {user.role === 'Admin' && (
+                {user?.role === 'Admin' && (
                     <form className='project-form' onSubmit={handleSubmit}>
                         <input
                             type='text'

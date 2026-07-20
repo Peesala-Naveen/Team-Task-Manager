@@ -25,8 +25,14 @@ exports.getProjects = async (req, res) => {
                 .populate('members', 'name email');
         } else {
             projects = await Project.find({
-                members: req.user.id
-            });
+                $or: [
+                    { members: req.user.id },
+                    { members: { $exists: true, $size: 0 } },
+                    { createdBy: req.user.id }
+                ]
+            })
+                .populate('createdBy', 'name')
+                .populate('members', 'name email');
         }
 
         res.json(projects);
